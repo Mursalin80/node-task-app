@@ -3,6 +3,7 @@ const app = express();
 require("./db/mongoose");
 const userRouter = require("./routes/user");
 const taskRouter = require("./routes/task");
+const router404 = require("./routes/404");
 
 const port = process.env.PORT || 3000;
 
@@ -14,8 +15,14 @@ app.use(userRouter);
 app.use(taskRouter);
 
 // Router 404
-app.get("*", (req, res) => {
-  res.status(404).send("No Page Found!");
+app.use(router404);
+
+const multer = require("multer");
+
+let upload = multer({ dest: "images" });
+
+app.post("/upload", upload.single("upload"), (req, res) => {
+  res.send();
 });
 
 app.listen(port, () => {
