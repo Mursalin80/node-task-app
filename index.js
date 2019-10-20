@@ -5,7 +5,7 @@ const userRouter = require("./routes/user");
 const taskRouter = require("./routes/task");
 const router404 = require("./routes/404");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // JSON body parser
 app.use(express.json());

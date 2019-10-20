@@ -3,6 +3,7 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const sharp = require("sharp");
+const { sendWelcomeEmail, sendCancelationEmail } = require("../emails/account");
 const brycpt = require("bcryptjs");
 
 const router = express.Router();
@@ -14,6 +15,8 @@ router.post("/user", async (req, res) => {
   let user = new User(req.body);
   try {
     await user.save();
+    sendWelcomeEmail(user.email, user.name);
+
     const token = await user.genAuthToken();
     res.send({ user, token });
   } catch (e) {
@@ -63,6 +66,8 @@ router.get("/users/me", auth, (req, res) => {
 router.delete("/user/me", auth, async (req, res) => {
   try {
     await req.user.remove();
+    sendCancelationEmail(req.user.email, req.user.name);
+
     res.send(req.user);
   } catch (e) {
     res.status(500).send(e);
